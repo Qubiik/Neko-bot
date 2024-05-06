@@ -14,7 +14,7 @@ import telebot
 import random
 from telebot import types
 
-bot = telebot.TeleBot("6990833167:AAFR6aZEDl78W5wttJhT84NT1LbyzEQPwRI", parse_mode=None)
+bot = telebot.TeleBot("api-key", parse_mode=None)
 
 @bot.message_handler(commands=['neko'])
 def neko(message):
