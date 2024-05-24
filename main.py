@@ -15,11 +15,12 @@ import random
 from telebot import types
 import os
 bot = telebot.TeleBot("6990833167:AAFR6aZEDl78W5wttJhT84NT1LbyzEQPwRI", parse_mode=None)
+admin = "1267002205"
 user = None
-count = 237
-
 def sendphoto(message):
-    image = open("neko/" + str(random.randint(0, count)) + ".jpg", "rb")
+    files = os.listdir('neko')
+    file_numbers = [int(file.split('.')[0]) for file in files if file.split('.')[0].isdigit()]
+    image = open("neko/" + str(random.randint(0, max(file_numbers))) + ".jpg", "rb")
     bot.send_photo(message.chat.id, image)
     image.close()
     
@@ -56,5 +57,29 @@ def button(message):
             bot.send_photo(message.chat.id, image)
             image.close()
         except:
-            bot.reply_to(message, "Максимальное значение 237, минимальное значение 1")
+            files = os.listdir('neko')
+            file_numbers = [int(file.split('.')[0]) for file in files if file.split('.')[0].isdigit()]
+            bot.reply_to(message, f"Максимальное значение {file_numbers}, минимальное значение 1")
+@bot.message_handler(content_types=['photo'])
+def handle_photo(message):
+    if str(message.chat.id) == admin:
+        # Получаем информацию о файле
+        file_id = message.photo[-1].file_id
+        file_info = bot.get_file(file_id)
+        file_extension = '.' + file_info.file_path.split('.')[-1]
+
+        # Находим порядковый номер для нового файла
+        files = os.listdir('neko')
+        file_numbers = [int(file.split('.')[0]) for file in files if file.split('.')[0].isdigit()]
+        if file_numbers:
+            next_file_number = max(file_numbers) + 1
+        else:
+            next_file_number = 1
+
+        # Сохраняем файл в папку 'neko'
+        downloaded_file = bot.download_file(file_info.file_path)
+        with open(f'neko/{next_file_number}{file_extension}', 'wb') as new_file:
+            new_file.write(downloaded_file)
+
+        bot.reply_to(message, "Фото сохранено!")
 bot.polling(none_stop=True)
