@@ -14,7 +14,7 @@ import telebot
 import random
 from telebot import types
 import os
-bot = telebot.TeleBot("6990833167:AAFR6aZEDl78W5wttJhT84NT1LbyzEQPwRI", parse_mode=None)
+bot = telebot.TeleBot("", parse_mode=None)
 admin = "1267002205"
 user = None
 def sendphoto(message):
